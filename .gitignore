@@ -2,6 +2,7 @@
 
 # auth folders
 authfiles/
+systools/
 
 # macOS
 .DS_Store
