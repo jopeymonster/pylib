@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<!-- html init -->
+<head>
+<title>Joe's JSON Fixer</title>
+</head>
+<body>
+
+<!-- html form -->
+<form id="jsonForm">
+    <label for="jsonFile">Load JSON File:</label>
+    <input type="file" id="jsonFile" accept=".json">
+    <br>
+    <label for="jsonInput">Or enter JSON text:</label>
+    <br>
+    <textarea id="jsonInput" rows="10" style="width: 90%;"></textarea>
+    <br>
+    <button type="button" id="fixButton">Fix It</button>
+    <button type="button" id="clearButton">Clear</button>
+</form>
+
+<!-- html text output and copy button -->
+<div>
+<button type="button" id="copyButton">Copy to Clipboard</button>
+</div>
+<textarea id="jsonOutput" rows="10" style="width: 90%;" readonly></textarea>
+
+<!-- JS -->
+<script>
+// start JS
+
+// input and execute
+document.getElementById('fixButton').addEventListener('click', async () => {
+    const jsonFileInput = document.getElementById('jsonFile');
+    const jsonInput = document.getElementById('jsonInput');
+    let jsonData;
+    if (jsonFileInput.files && jsonFileInput.files.length > 0) {
+        const inputFile = jsonFileInput.files[0];
+        const fileContent = await inputFile.text();
+        jsonData = JSON.parse(fileContent);
+    } else if (jsonInput.value.trim() !== '') {
+        jsonData = JSON.parse(jsonInput.value);
+    } else {
+        console.log('Please select a JSON file or enter JSON text.');
+        return;
+    }
+// target
+    const targetObject = {
+        type: '',
+        hidden: false
+    };
+// call fix and output
+    removeObjectFromJson(jsonData, targetObject);
+    const outputJSON = JSON.stringify(jsonData, null, 4);
+    document.getElementById('jsonOutput').value = outputJSON;
+    document.getElementById('copyButton').style.display = 'block';
+    console.log('JSON data fixed and displayed.');
+});
+// copy button
+document.getElementById('copyButton').addEventListener('click', () => {
+    const jsonOutput = document.getElementById('jsonOutput');
+    jsonOutput.select();
+    document.execCommand('copy');
+    console.log('Copied JSON to clipboard.');
+});
+// clear button
+document.getElementById('clearButton').addEventListener('click', () => {
+    document.getElementById('jsonFile').value = '';
+    document.getElementById('jsonInput').value = '';
+    document.getElementById('jsonOutput').value = '';
+    document.getElementById('copyButton').style.display = 'none';
+    console.log('Fields cleared.');
+});
+// check object type and remove
+function removeObjectFromJson(jsonData, targetObject) {
+    if (typeof jsonData === 'object') {
+        if (Array.isArray(jsonData)) {
+            jsonData.forEach((item, index) => {
+                if (JSON.stringify(item) === JSON.stringify(targetObject)) {
+                    jsonData.splice(index, 1);
+                    console.log('Removed empty object');
+                } else {
+                    removeObjectFromJson(item, targetObject);
+                }
+            });
+        } else {
+            for (const key in jsonData) {
+                if (JSON.stringify(jsonData[key]) === JSON.stringify(targetObject)) {
+                    delete jsonData[key];
+                    console.log('Removed empty object');
+                } else {
+                    removeObjectFromJson(jsonData[key], targetObject);
+                }
+            }
+        }
+    }
+}
+// end JS
+</script>
+<!-- closed tags-->
+</body>
+</html>

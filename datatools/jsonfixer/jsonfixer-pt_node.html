@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JSON Object Removal</title>
+</head>
+<body>
+
+<form id="jsonForm">
+    <label for="jsonFile">Load JSON File:</label>
+    <input type="file" id="jsonFile" accept=".json" required>
+    <button type="button" id="removeButton">Fix It</button>
+</form>
+
+<script>
+    document.getElementById('removeButton').addEventListener('click', async () => {
+        const jsonFileInput = document.getElementById('jsonFile');
+        if (!jsonFileInput.files || jsonFileInput.files.length === 0) {
+            console.log('Please select a JSON file.');
+            return;
+        }
+
+        const inputFile = jsonFileInput.files[0];
+        const inputFilePath = inputFile.name;
+        const outputFilePath = inputFilePath.replace('.json', '-fixed.json');
+        const targetObject = {
+            type: '',
+            hidden: false
+        };
+
+        try {
+            const fileContent = await inputFile.text();
+            const jsonData = JSON.parse(fileContent);
+            removeObjectFromJson(jsonData, targetObject);
+
+            const fs = require('fs');
+            fs.writeFileSync(outputFilePath, JSON.stringify(jsonData, null, 4));
+
+            console.log('Script completed. JSON file has been written.');
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    });
+
+    function removeObjectFromJson(jsonData, targetObject) {
+        if (typeof jsonData === 'object') {
+            if (Array.isArray(jsonData)) {
+                jsonData.forEach((item, index) => {
+                    if (JSON.stringify(item) === JSON.stringify(targetObject)) {
+                        jsonData.splice(index, 1);
+                        console.log('Removed empty object');
+                    } else {
+                        removeObjectFromJson(item, targetObject);
+                    }
+                });
+            } else {
+                for (const key in jsonData) {
+                    if (JSON.stringify(jsonData[key]) === JSON.stringify(targetObject)) {
+                        delete jsonData[key];
+                        console.log('Removed empty object');
+                    } else {
+                        removeObjectFromJson(jsonData[key], targetObject);
+                    }
+                }
+            }
+        }
+    }
+</script>
+</body>
+</html>
