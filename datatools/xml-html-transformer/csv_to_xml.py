@@ -40,6 +40,9 @@ def convert_csv_to_xml(csv_file, xml_file_name=None):
             xmlfile.write('</urlset>\n')  # Closing XML URL set
 
 def main():
+    print("XML File Converter by JDT\n"
+          "Current capabilities: Convert CSV files into XML\n"
+          " - Provide a CSV file containing a list of URLs and generate a basic XML sitemap file\n")
     csv_file_path = input("Enter the path to the CSV file: ")
     while not validate_file_path(csv_file_path):
         print("Invalid file path. Please enter a valid path.")
