@@ -136,7 +136,8 @@ def get_page_info(url, headers, target_tag, target_id, target_class):
     soup = BeautifulSoup(page_markup, "html.parser")
     
     # testing - check for doctype
-    has_doctype = page_markup.startswith(b"<!DOCTYPE html>")
+    doctype_pattern = re.compile(br"^\s*(<!--.*?-->\s*)*<!DOCTYPE html>", re.IGNORECASE | re.DOTALL)
+    has_doctype = bool(doctype_pattern.match(page_markup))
     if not has_doctype:
         print(f"DTD missing: {url}")
         return status_code, "","","",[]

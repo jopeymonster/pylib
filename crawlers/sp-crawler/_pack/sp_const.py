@@ -26,7 +26,7 @@ PROPS = {
 'TA':'https://www.totalpickleball.com.au/',
 'RE':'https://www.runningwarehouse.eu/',
 'TE':'https://www.tenniswarehouse-europe.com/',
-'TP':'https://www.totalpickleball.com/',
+'PBW':'https://www.pickleballwarehouse.com/',
 'PA':'https://www.totalpadel.com/',
 'XX':'Input exact URL',
 'EX':'Quit'
@@ -51,7 +51,7 @@ CAT_DESC = {
 'TA': 'catheader_info-catdesc',
 'RE': 'catheader_info-catdesc',
 'TE': 'catheader_info-catdesc',
-'TP': 'catheader_info-catdesc',
+'PBW': 'catheader_info-catdesc',
 'PA': 'catheader_info-catdesc',
 }
 
@@ -75,7 +75,7 @@ NAV = {
 'IW':('mobile_content', 'l-content-menu'),
 'DW':('mobile_content', 'l-content-menu'),
 'RB':('mobile_content', 'l-content-menu'),
-'TP':('mobile_content', 'l-content-menu'),
+'PBW':('mobile_content', 'l-content-menu'),
 'TA':('mobile_content', 'l-content-menu'),
 'PA':('mobile_content', 'l-content-menu'),
 }
@@ -102,7 +102,7 @@ CONTENT = {
 'IW':('mobile_content', 'l-content-area'),
 'DW':('mobile_content', 'l-content-area'),
 'RB':('mobile_content', 'l-content-area'),
-'TP':('mobile_content', 'l-content-area'),
+'PBW':('mobile_content', 'l-content-area'),
 'TA':('mobile_content', 'l-content-area'),
 'PA':('mobile_content', 'l-content-area'),
 }
@@ -146,7 +146,7 @@ NAVTAGS = {
 'IW':('mobile_content', 'l-content-menu'),
 'DW':('mobile_content', 'l-content-menu'),
 'RB':('mobile_content', 'l-content-menu'),
-'TP':('mobile_content', 'l-content-menu'),
+'PBW':('mobile_content', 'l-content-menu'),
 'TA':('mobile_content', 'l-content-menu'),
 'PA':('mobile_content', 'l-content-menu'),
 }
@@ -170,7 +170,7 @@ NAVIDS = {
 'IW':('mobile_content', 'l-content-menu'),
 'DW':('mobile_content', 'l-content-menu'),
 'RB':('mobile_content', 'l-content-menu'),
-'TP':('mobile_content', 'l-content-menu'),
+'PBW':('mobile_content', 'l-content-menu'),
 'TA':('mobile_content', 'l-content-menu'),
 'PA':('mobile_content', 'l-content-menu'),
 }
@@ -194,7 +194,7 @@ NAVCLASSES = {
 'IW':('mobile_content', 'l-content-menu'),
 'DW':('mobile_content', 'l-content-menu'),
 'RB':('mobile_content', 'l-content-menu'),
-'TP':('mobile_content', 'l-content-menu'),
+'PBW':('mobile_content', 'l-content-menu'),
 'TA':('mobile_content', 'l-content-menu'),
 'PA':('mobile_content', 'l-content-menu'),
 }
@@ -218,7 +218,7 @@ CONT_TAGS = {
 'IW':('mobile_content', 'l-content-area'),
 'DW':('mobile_content', 'l-content-area'),
 'RB':('mobile_content', 'l-content-area'),
-'TP':('mobile_content', 'l-content-area'),
+'PBW':('mobile_content', 'l-content-area'),
 'TA':('mobile_content', 'l-content-area'),
 'PA':('mobile_content', 'l-content-area'),
 }
@@ -242,7 +242,7 @@ CONT_IDS = {
 'IW':('mobile_content', 'l-content-area'),
 'DW':('mobile_content', 'l-content-area'),
 'RB':('mobile_content', 'l-content-area'),
-'TP':('mobile_content', 'l-content-area'),
+'PBW':('mobile_content', 'l-content-area'),
 'TA':('mobile_content', 'l-content-area'),
 'PA':('mobile_content', 'l-content-area'),
 }
@@ -266,7 +266,7 @@ CONT_CLASSES = {
 'IW':('mobile_content', 'l-content-area'),
 'DW':('mobile_content', 'l-content-area'),
 'RB':('mobile_content', 'l-content-area'),
-'TP':('mobile_content', 'l-content-area'),
+'PBW':('mobile_content', 'l-content-area'),
 'TA':('mobile_content', 'l-content-area'),
 'PA':('mobile_content', 'l-content-area'),
 }
