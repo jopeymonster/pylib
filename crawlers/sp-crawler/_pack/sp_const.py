@@ -28,6 +28,7 @@ PROPS = {
 'TE':'https://www.tenniswarehouse-europe.com/',
 'PBW':'https://www.pickleballwarehouse.com/',
 'PA':'https://www.totalpadel.com/',
+'PD':'https://www.padelwarehouse.com/',
 'XX':'Input exact URL',
 'EX':'Quit'
 }
@@ -53,6 +54,7 @@ CAT_DESC = {
 'TE': 'catheader_info-catdesc',
 'PBW': 'catheader_info-catdesc',
 'PA': 'catheader_info-catdesc',
+'PD': 'catheader_info-catdesc',
 }
 
 # left menu
@@ -78,6 +80,7 @@ NAV = {
 'PBW':('mobile_content', 'l-content-menu'),
 'TA':('mobile_content', 'l-content-menu'),
 'PA':('mobile_content', 'l-content-menu'),
+'PD':('mobile_content', 'l-content-menu'),
 }
 
 # main view
@@ -105,6 +108,7 @@ CONTENT = {
 'PBW':('mobile_content', 'l-content-area'),
 'TA':('mobile_content', 'l-content-area'),
 'PA':('mobile_content', 'l-content-area'),
+'PD':('mobile_content', 'l-content-area'),
 }
 
 
@@ -149,6 +153,7 @@ NAVTAGS = {
 'PBW':('mobile_content', 'l-content-menu'),
 'TA':('mobile_content', 'l-content-menu'),
 'PA':('mobile_content', 'l-content-menu'),
+'PD':('mobile_content', 'l-content-menu'),
 }
 
 NAVIDS = {
@@ -173,6 +178,7 @@ NAVIDS = {
 'PBW':('mobile_content', 'l-content-menu'),
 'TA':('mobile_content', 'l-content-menu'),
 'PA':('mobile_content', 'l-content-menu'),
+'PD':('mobile_content', 'l-content-menu'),
 }
 
 NAVCLASSES = {
@@ -197,6 +203,7 @@ NAVCLASSES = {
 'PBW':('mobile_content', 'l-content-menu'),
 'TA':('mobile_content', 'l-content-menu'),
 'PA':('mobile_content', 'l-content-menu'),
+'PD':('mobile_content', 'l-content-menu'),
 }
 
 CONT_TAGS = {
@@ -221,6 +228,7 @@ CONT_TAGS = {
 'PBW':('mobile_content', 'l-content-area'),
 'TA':('mobile_content', 'l-content-area'),
 'PA':('mobile_content', 'l-content-area'),
+'PD':('mobile_content', 'l-content-area'),
 }
 
 CONT_IDS = {
@@ -245,6 +253,7 @@ CONT_IDS = {
 'PBW':('mobile_content', 'l-content-area'),
 'TA':('mobile_content', 'l-content-area'),
 'PA':('mobile_content', 'l-content-area'),
+'PD':('mobile_content', 'l-content-area'),
 }
 
 CONT_CLASSES = {
@@ -269,5 +278,6 @@ CONT_CLASSES = {
 'PBW':('mobile_content', 'l-content-area'),
 'TA':('mobile_content', 'l-content-area'),
 'PA':('mobile_content', 'l-content-area'),
+'PD':('mobile_content', 'l-content-area'),
 }
 
