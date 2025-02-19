@@ -6,12 +6,11 @@ systools/
 
 # macOS
 .DS_Store
+.DS_Store?
 .AppleDouble
 .LSOverride
 
 # Folders that might appear
-.DS_Store
-.DS_Store?
 .Spotlight-V100
 .Trashes
 

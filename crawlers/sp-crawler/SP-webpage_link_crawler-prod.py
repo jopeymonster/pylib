@@ -8,45 +8,7 @@ import requests
 from bs4 import BeautifulSoup, Doctype
 from urllib.parse import urljoin, urlparse
 from _pack import sp_const
-
-# exceptions
-# wrapper update
-def handle_exceptions(func):
-    def wrapper(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
-        except requests.exceptions.RequestException as e:
-            print_error(func.__name__, e)
-        except ValueError as e:
-            print_error(func.__name__, e)
-        except KeyboardInterrupt as e:
-            print_error(func.__name__, e)
-        except FileNotFoundError as e:
-            print_error(func.__name__, e)
-        except AttributeError as e:
-            print_error(func.__name__, )
-        except Exception as e:
-            print_error(func.__name__, e)
-    def print_error(func_name, error):
-        print(f"\nError in function '{func_name}': {repr(error)} - Exiting...\n")
-    return wrapper
-
-#og wrapper
-# def handle_exceptions(func):
-#     def wrapper(*args, **kwargs):
-#         try:
-#             return func(*args, **kwargs)
-#         except requests.exceptions.RequestException as _:
-#            print(f"\nError making request: {repr(_)} - Exiting...\n")
-#         except ValueError as _:
-#             print(f"\nInvalid value: {repr(_)} - Exiting...\n")
-#         except KeyboardInterrupt as _:
-#             print(f"\nUser Interrupt: {repr(_)} - Exiting...\n")
-#         except FileNotFoundError as _:
-#             print(f"\nFile not found: {repr(_)} - Exiting...\n")
-#         except Exception as _:
-#             print(f"\nError: {repr(_)} - Exiting...\n")
-#     return wrapper
+import helpers
 
 # prop list
 def prop_list():
@@ -258,7 +220,7 @@ def get_file_name():
     # initalize a new file with headers if none
     if not os.path.exists(file_name):
         with open(file_name, 'w', newline='', encoding='utf-8') as file:
-            file.write('URL,Status Code,Title,Meta Description,Canonical Link\n')
+            file.write('URL,Status Code,Title,Meta Description,Canonical Link,Source\n')
     return file_name
 
 # save output to a file
@@ -269,6 +231,83 @@ def save_to_file(file_name, data):
             row = ['"{}"'.format(value) for value in row]
             file.write(','.join(row) + '\n')
 
+# testing source_url
+def crawl():    
+    headers = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.79 Safari/537.36"}
+    init_prompt, url_seed = get_crawl_seed()
+    target_tag, target_id, target_class = get_targets(init_prompt, url_seed)
+    crawl_depth = get_crawl_depth()
+    file_name = get_file_name()
+    # Initialize a list with the starting URL, depth, and source (None for seed URL)
+    to_crawl = [(url_seed, 0, None)]
+    output_data = []
+    crawled_urls = set()
+    counted_urls = 0
+    total_errors = 0
+    print(f"\nCrawl seed: {url_seed}\n"
+          f"Target tag: {target_tag}\n"
+          f"Target ID: {target_id}\n"
+          f"Target class: {target_class}\n"
+          f"Crawl depth: {crawl_depth}\n"
+          f"File name: {file_name}\n")
+    input("Press Enter to begin...")
+    start_time = time.time()
+    while to_crawl:
+        # Get next URL, depth, and source URL
+        target_url, current_depth, source_url = to_crawl.pop(0)
+        if current_depth <= crawl_depth and target_url not in crawled_urls:
+            # Get page info
+            status_code, title, meta_desc, canonical_link, target_links_group = get_page_info(
+                target_url, headers, target_tag, target_id, target_class)
+            if not is_valid_url(target_url):
+                print(f"Invalid URL: {target_url}")
+                continue
+            # Handle errors and 404s
+            if status_code == 404:
+                print(f"404 Error: {target_url}")
+                output_data.append([target_url, f"{status_code}", "", "", "", source_url])
+                save_to_file(file_name, [[target_url, f"{status_code}", title, meta_desc, canonical_link, source_url]])
+                crawled_urls.add(target_url)
+                total_errors += 1
+                continue
+            elif status_code >= 400 and status_code != 404:
+                print(f"Error, Client or Server: {status_code} | URL: {target_url}")
+                output_data.append([target_url, f"{status_code}", "", "", "", source_url])
+                crawled_urls.add(target_url)
+                total_errors += 1
+                continue
+            # Increment count for successful URLs
+            counted_urls += 1
+            print(f"Saved to file: {target_url}")
+            # Add delay for 403, else normal delay
+            if status_code == 403:
+                print(f"Received 403 status code. Adding a longer delay.")
+                time.sleep(5)
+            else:
+                time.sleep(1)
+            # Log progress every 50 URLs
+            if counted_urls % 50 == 0:
+                print(f"Analysis in progress... counted {counted_urls} URLs so far.")
+            # Save to output
+            output_data.append([target_url, f"{status_code}", title, meta_desc, canonical_link, source_url])
+            save_to_file(file_name, [[target_url, f"{status_code}", title, meta_desc, canonical_link, source_url]])
+            crawled_urls.add(target_url)
+            # Extract links and track source
+            for link in target_links_group:
+                link = link.get("href", "No href attribute")
+                if "#" in link or link.startswith("tel:") or re.search(r'descpage', link):
+                    continue
+                if link and (link.endswith(".html") or link.endswith(".htm") or not '.' in link):
+                    absolute_link = urljoin(target_url, link)
+                    if within_crawl_depth(current_depth + 1, crawl_depth) and urlparse(absolute_link).netloc == urlparse(url_seed).netloc:
+                        # Store new URL with its source URL
+                        to_crawl.append((absolute_link, current_depth + 1, target_url))
+    print(f"\nIdentified {counted_urls} links, {total_errors} errors were found | Saved output to {file_name}")
+    end_time = time.time()
+    execution_time = end_time - start_time
+    print(f"Total execution time: {execution_time}")
+
+""" og, no source_url
 def crawl():    
     headers = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.79 Safari/537.36"}
     init_prompt, url_seed = get_crawl_seed()
@@ -295,38 +334,38 @@ def crawl():
     start_time = time.time()
     while to_crawl:
         # Get the next URL and its depth to crawl
-        current_url, current_depth = to_crawl.pop(0)
-        if current_depth <= crawl_depth and current_url not in crawled_urls:
+        target_url, current_depth = to_crawl.pop(0)
+        if current_depth <= crawl_depth and target_url not in crawled_urls:
             # get URL info
             status_code, title, meta_desc, canonical_link, target_links_group = get_page_info(
-                current_url, headers, target_tag, target_id, target_class)
+                target_url, headers, target_tag, target_id, target_class)
             # Skip processing if the URL is not valid
-            if not is_valid_url(current_url):
-                print(f"Invalid URL: {current_url}")
+            if not is_valid_url(target_url):
+                print(f"Invalid URL: {target_url}")
                 continue
             # log url if 404
             if status_code == 404:
-                print(f"404 Error: {current_url}")
+                print(f"404 Error: {target_url}")
                 output_data.append([
-                    current_url, f"{status_code}", "", "", ""
+                    target_url, f"{status_code}", "", "", ""
                 ])
-                save_to_file(file_name, [[current_url, f"{status_code}", title, meta_desc, canonical_link]])
-                crawled_urls.add(current_url)  # Mark as crawled to avoid redundant processing
+                save_to_file(file_name, [[target_url, f"{status_code}", title, meta_desc, canonical_link]])
+                crawled_urls.add(target_url)  # Mark as crawled to avoid redundant processing
                 total_errors += 1
                 continue
             # Check if it's a client error (4xx) or server error (5xx)
             elif status_code >= 400 and status_code != 404:
-                print(f"Error, Client or Server: {status_code} | URL: {current_url}")
+                print(f"Error, Client or Server: {status_code} | URL: {target_url}")
                 # log url and status code
                 output_data.append([
-                    current_url, f"{status_code}", "", "", ""
+                    target_url, f"{status_code}", "", "", ""
                 ])
-                crawled_urls.add(current_url)  # Mark as crawled to avoid redundant processing
+                crawled_urls.add(target_url)  # Mark as crawled to avoid redundant processing
                 total_errors += 1
                 continue
             # Increment the counter only for successful URLs
             counted_urls += 1
-            print(f"Saved to file: {current_url}")
+            print(f"Saved to file: {target_url}")
             # Add a longer delay for 403 status code
             if status_code == 403:
                 print(f"Received 403 status code. Adding a longer delay.")
@@ -339,14 +378,14 @@ def crawl():
                 print(f"Analysis in progress... counted {counted_urls} URLs so far.")
             # Append the data to the output_data list
             output_data.append([
-                current_url, f"{status_code}", title, meta_desc, canonical_link
+                target_url, f"{status_code}", title, meta_desc, canonical_link
             ])
 
             # testing - save url when its crawled
-            save_to_file(file_name, [[current_url, f"{status_code}", title, meta_desc, canonical_link]])
+            save_to_file(file_name, [[target_url, f"{status_code}", title, meta_desc, canonical_link]])
 
             # add url as crawled
-            crawled_urls.add(current_url)
+            crawled_urls.add(target_url)
             # qualifier loop
             for link in target_links_group:
                 link = link.get("href", "No href attribute")
@@ -356,7 +395,7 @@ def crawl():
                 # Check if the link ends with .html, .htm, or has no extension (assuming it's an HTML link)
                 if link and (link.endswith(".html") or link.endswith(".htm") or not '.' in link):
                     # Resolve relative URLs to absolute URLs
-                    absolute_link = urljoin(current_url, link)
+                    absolute_link = urljoin(target_url, link)
                     # is link within the specified depth and same domain
                     if within_crawl_depth(current_depth + 1, crawl_depth) and urlparse(absolute_link).netloc == urlparse(url_seed).netloc:
                         # Add link to the list
@@ -366,8 +405,9 @@ def crawl():
     end_time = time.time()
     execution_time = end_time - start_time
     print(f"Total execution time: {execution_time}")
+"""
 
-@handle_exceptions
+# @helpers.handle_exceptions
 def main():
     while True:
         crawl()
