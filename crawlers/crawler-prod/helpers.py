@@ -1,15 +1,12 @@
-import random
+
 import time
-import os
 import sys
-import re
 import json
 import pydoc
 import requests
 from datetime import datetime
 import pandas as pd
 from tabulate import tabulate
-from urllib.parse import urljoin, urlparse
 
 # exceptions wrapper
 def handle_exceptions(func):
@@ -64,8 +61,8 @@ def display_table(table_data):
 """
 additional output logic for later integration:
 
-accounts_table.to_csv("accounts_data.csv", index=False)  # Save as CSV
-accounts_table.to_excel("accounts_data.xlsx", index=False)  # Save as Excel
+table_data.to_csv("table_data.csv", index=False)  # Save as CSV
+table_data.to_excel("table_data.xlsx", index=False)  # Save as Excel
 
 """
 

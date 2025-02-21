@@ -32,13 +32,11 @@ def get_crawl_depth():
 
 # new get_target test
 def get_targets(init_prompt, url):
-    # Extract the domain from the input URL if init_prompt is 'XX'
     if init_prompt == 'XX':
         regex_pattern = r'(www\.)([\w-]+)(\.com|\.com\.au|\.eu)?'
         match = re.search(regex_pattern, url, re.IGNORECASE)
         if match:
             domain = match.group(2)
-            # Check if the domain matches any of the dictionary values
             for key, value in sp_const.PROPS.items():
                 if domain in value:
                     init_prompt = key
@@ -58,7 +56,7 @@ def get_targets(init_prompt, url):
             break
         else:
             print("Invalid input, please select 1 or 2")
-    # Call handle_tag_choice to get the target qualifiers
+    # call handle_tag_choice to get the target qualifiers
     # print(f"Tag choice: {tag_choice} | Init prompt: {init_prompt}")
     target_tag, target_id, target_class = handle_tag_choice(tag_choice, init_prompt)
     return target_tag, target_id, target_class
@@ -77,13 +75,10 @@ def handle_tag_choice(tag_choice, init_prompt):
     return target_tag, target_id, target_class
 
 def get_page_details(soup):
-    # title = soup.title.string.strip() if soup.title else "No title"
     title = soup.title.string.strip() if soup.title and soup.title.string is not None else "No title"
     canonical_tag = soup.head.find("link", rel="canonical")
     canonical_link = canonical_tag["href"].strip() if canonical_tag and canonical_tag.get("href") is not None else "No canonical present"
-    #canonical_link = canonical_tag["href"].strip() if canonical_tag else "No canonical present"
     meta_tag = soup.head.find("meta", attrs={"name": "description"})
-    #meta_desc = meta_tag["content"].strip() if meta_tag and "content" in meta_tag.attrs else "No meta description"
     meta_desc = meta_tag["content"].strip() if meta_tag and "content" in meta_tag.attrs and meta_tag.get("content") is not None else "No meta description"
     return title, meta_desc, canonical_link
 
@@ -93,54 +88,22 @@ def get_page_info(url, headers, target_tag, target_id, target_class):
     status_code = response.status_code
     if status_code in [404,406]:
         return status_code, "","","",[] 
-    target_links_group = [] # part of test - initiate list earlier to account for target_element as None
+    target_links_group = []
     page_markup = response.content
     soup = BeautifulSoup(page_markup, "html.parser")
-    
-    # testing - check for doctype
+    # check for doctype declaration
     doctype_pattern = re.compile(br"^\s*(<!--.*?-->\s*)*<!DOCTYPE html>", re.IGNORECASE | re.DOTALL)
     has_doctype = bool(doctype_pattern.match(page_markup))
     if not has_doctype:
         print(f"DTD missing: {url}")
         return status_code, "","","",[]
-
-    # testing - missing <head> tag
+    # missing <head> tag
     head_tag = soup.find("head")
     if head_tag is None:
         print(f"<head> tag not found: {url}")
         title, meta_desc, canonical_link = get_page_details(soup)
     else:   
-
         title, meta_desc, canonical_link = get_page_details(soup)
-        
-        # testing modular
-        # # title = soup.title.string.strip() if soup.title else "No title"
-        # title = soup.title.string.strip() if soup.title and soup.title.string is not None else "No title"
-        # canonical_tag = soup.head.find("link", rel="canonical")
-        # canonical_link = canonical_tag["href"].strip() if canonical_tag and canonical_tag.get("href") is not None else "No canonical present"
-        # #canonical_link = canonical_tag["href"].strip() if canonical_tag else "No canonical present"
-        # meta_tag = soup.head.find("meta", attrs={"name": "description"})
-        # #meta_desc = meta_tag["content"].strip() if meta_tag and "content" in meta_tag.attrs else "No meta description"
-        # meta_desc = meta_tag["content"].strip() if meta_tag and "content" in meta_tag.attrs and meta_tag.get("content") is not None else "No meta description"
-        
-        #OG
-        # # Try to find the target element using target_id
-        # target_element = None
-        # if target_id:
-        #     target_element = soup.find(id_=target_id)
-        # # If target_id is not found and target_class is specified, try to find the target element using class
-        # if target_element is None and target_class:
-        #     target_element = soup.find(class_=target_class)
-        # # If both target_id and class are not found, try to find the target element using only target_tag
-        # if target_element is None:
-        #     target_element = soup.find(target_tag)
-        # # If target element is found, get all anchor tags within it
-        # target_links_group = []
-        # if target_element:
-        #     target_links = target_element.find_all("a", recursive=True)
-        #     target_links_group.extend(target_links)
-
-    # testing
     target_element = None
     # find the element by ID if target_id exists
     if target_id:
@@ -163,7 +126,6 @@ def get_page_info(url, headers, target_tag, target_id, target_class):
 
     return status_code, title, meta_desc, canonical_link, target_links_group
 
-# Define a function to check if a link is within the specified crawl depth
 def within_crawl_depth(link_depth, crawl_depth):
     return link_depth <= crawl_depth
 
@@ -231,14 +193,13 @@ def save_to_file(file_name, data):
             row = ['"{}"'.format(value) for value in row]
             file.write(','.join(row) + '\n')
 
-# testing source_url
 def crawl():    
-    headers = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.79 Safari/537.36"}
+    headers = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.79 Safari/537.36-X"}
     init_prompt, url_seed = get_crawl_seed()
     target_tag, target_id, target_class = get_targets(init_prompt, url_seed)
     crawl_depth = get_crawl_depth()
     file_name = get_file_name()
-    # Initialize a list with the starting URL, depth, and source (None for seed URL)
+    # init list with the seed URL, depth, and source (None for seed URL)
     to_crawl = [(url_seed, 0, None)]
     output_data = []
     crawled_urls = set()
@@ -253,16 +214,14 @@ def crawl():
     input("Press Enter to begin...")
     start_time = time.time()
     while to_crawl:
-        # Get next URL, depth, and source URL
         target_url, current_depth, source_url = to_crawl.pop(0)
         if current_depth <= crawl_depth and target_url not in crawled_urls:
-            # Get page info
             status_code, title, meta_desc, canonical_link, target_links_group = get_page_info(
                 target_url, headers, target_tag, target_id, target_class)
             if not is_valid_url(target_url):
                 print(f"Invalid URL: {target_url}")
                 continue
-            # Handle errors and 404s
+            # errors and 404s
             if status_code == 404:
                 print(f"404 Error: {target_url}")
                 output_data.append([target_url, f"{status_code}", "", "", "", source_url])
@@ -276,23 +235,21 @@ def crawl():
                 crawled_urls.add(target_url)
                 total_errors += 1
                 continue
-            # Increment count for successful URLs
             counted_urls += 1
             print(f"Saved to file: {target_url}")
-            # Add delay for 403, else normal delay
+            # add delay for 403, else normal delay
             if status_code == 403:
                 print(f"Received 403 status code. Adding a longer delay.")
                 time.sleep(5)
             else:
                 time.sleep(1)
-            # Log progress every 50 URLs
+            # log every 50 URLs
             if counted_urls % 50 == 0:
                 print(f"Analysis in progress... counted {counted_urls} URLs so far.")
-            # Save to output
             output_data.append([target_url, f"{status_code}", title, meta_desc, canonical_link, source_url])
             save_to_file(file_name, [[target_url, f"{status_code}", title, meta_desc, canonical_link, source_url]])
             crawled_urls.add(target_url)
-            # Extract links and track source
+            # extract links and track source
             for link in target_links_group:
                 link = link.get("href", "No href attribute")
                 if "#" in link or link.startswith("tel:") or re.search(r'descpage', link):
@@ -300,114 +257,13 @@ def crawl():
                 if link and (link.endswith(".html") or link.endswith(".htm") or not '.' in link):
                     absolute_link = urljoin(target_url, link)
                     if within_crawl_depth(current_depth + 1, crawl_depth) and urlparse(absolute_link).netloc == urlparse(url_seed).netloc:
-                        # Store new URL with its source URL
                         to_crawl.append((absolute_link, current_depth + 1, target_url))
     print(f"\nIdentified {counted_urls} links, {total_errors} errors were found | Saved output to {file_name}")
     end_time = time.time()
     execution_time = end_time - start_time
     print(f"Total execution time: {execution_time}")
 
-""" og, no source_url
-def crawl():    
-    headers = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.79 Safari/537.36"}
-    init_prompt, url_seed = get_crawl_seed()
-    target_tag, target_id, target_class = get_targets(init_prompt, url_seed)
-    crawl_depth = get_crawl_depth()
-    file_name = get_file_name()
-    # Initialize a list with the starting URL and its depth
-    to_crawl = [(url_seed, 0)]
-    # Initialize the output_data list outside the loop
-    output_data = []
-    # A set to keep track of crawled URLs
-    crawled_urls = set()
-    # count URLs and errors
-    counted_urls = 0
-    total_errors = 0
-    print(f"\nCrawl seed: {url_seed}\n"
-        f"Target tag: {target_tag}\n"
-        f"Target ID: {target_id}\n"
-        f"Target class: {target_class}\n"
-        f"Crawl depth: {crawl_depth}\n"
-        f"File name: {file_name}\n")
-    input("Press Enter to begin...")
-    # Keep crawling as long as there are URLs to crawl within the specified depth
-    start_time = time.time()
-    while to_crawl:
-        # Get the next URL and its depth to crawl
-        target_url, current_depth = to_crawl.pop(0)
-        if current_depth <= crawl_depth and target_url not in crawled_urls:
-            # get URL info
-            status_code, title, meta_desc, canonical_link, target_links_group = get_page_info(
-                target_url, headers, target_tag, target_id, target_class)
-            # Skip processing if the URL is not valid
-            if not is_valid_url(target_url):
-                print(f"Invalid URL: {target_url}")
-                continue
-            # log url if 404
-            if status_code == 404:
-                print(f"404 Error: {target_url}")
-                output_data.append([
-                    target_url, f"{status_code}", "", "", ""
-                ])
-                save_to_file(file_name, [[target_url, f"{status_code}", title, meta_desc, canonical_link]])
-                crawled_urls.add(target_url)  # Mark as crawled to avoid redundant processing
-                total_errors += 1
-                continue
-            # Check if it's a client error (4xx) or server error (5xx)
-            elif status_code >= 400 and status_code != 404:
-                print(f"Error, Client or Server: {status_code} | URL: {target_url}")
-                # log url and status code
-                output_data.append([
-                    target_url, f"{status_code}", "", "", ""
-                ])
-                crawled_urls.add(target_url)  # Mark as crawled to avoid redundant processing
-                total_errors += 1
-                continue
-            # Increment the counter only for successful URLs
-            counted_urls += 1
-            print(f"Saved to file: {target_url}")
-            # Add a longer delay for 403 status code
-            if status_code == 403:
-                print(f"Received 403 status code. Adding a longer delay.")
-                time.sleep(5)
-            else:
-                # Regular delay
-                time.sleep(1)
-            # Calculate total crawled per 50 and print status
-            if counted_urls % 50 == 0:
-                print(f"Analysis in progress... counted {counted_urls} URLs so far.")
-            # Append the data to the output_data list
-            output_data.append([
-                target_url, f"{status_code}", title, meta_desc, canonical_link
-            ])
-
-            # testing - save url when its crawled
-            save_to_file(file_name, [[target_url, f"{status_code}", title, meta_desc, canonical_link]])
-
-            # add url as crawled
-            crawled_urls.add(target_url)
-            # qualifier loop
-            for link in target_links_group:
-                link = link.get("href", "No href attribute")
-                # Skip if the link starts with "tel:" or "#"
-                if "#" in link or link.startswith("tel:") or re.search(r'descpage', link):
-                    continue
-                # Check if the link ends with .html, .htm, or has no extension (assuming it's an HTML link)
-                if link and (link.endswith(".html") or link.endswith(".htm") or not '.' in link):
-                    # Resolve relative URLs to absolute URLs
-                    absolute_link = urljoin(target_url, link)
-                    # is link within the specified depth and same domain
-                    if within_crawl_depth(current_depth + 1, crawl_depth) and urlparse(absolute_link).netloc == urlparse(url_seed).netloc:
-                        # Add link to the list
-                        to_crawl.append((absolute_link, current_depth + 1))                         
-    # save_to_file(file_name, output_data)
-    print(f"\nIdentified {counted_urls} links, {total_errors} errors were found | Saved output to {file_name}")
-    end_time = time.time()
-    execution_time = end_time - start_time
-    print(f"Total execution time: {execution_time}")
-"""
-
-# @helpers.handle_exceptions
+@helpers.handle_exceptions
 def main():
     while True:
         crawl()
