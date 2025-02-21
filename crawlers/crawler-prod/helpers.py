@@ -5,7 +5,6 @@ import json
 import pydoc
 import requests
 from datetime import datetime
-import pandas as pd
 from tabulate import tabulate
 
 # exceptions wrapper
