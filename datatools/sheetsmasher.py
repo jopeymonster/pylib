@@ -1,13 +1,16 @@
 import pandas as pd
 import os
+from datetime import datetime
+
+# var declaration
+timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
 
 def menu():
     print("\nCSV to Excel XSLX Sheet Smasher\n"
           "Provide multiple CSV files and combine them into 1 XSLX.\n")
     csv_files = input("Enter CSV file paths separated by commas: ").split(",")
-    filename = input("Enter a new workbook file name (if left blank, default name will be 'combined.xlsx'): ").strip()
-    filename = f"{filename}.xlsx" or "combined.xlsx"  # Default if blank
-
+    filename = input(f"Enter a new workbook file name (if left blank, default name will be 'combined-{timestamp}.xlsx'): ").strip()
+    filename = f"{filename}-{timestamp}.xlsx" if filename else f"combined-{timestamp}.xlsx"  # Default if blank    
     csvs_to_excel(csv_files, filename)
 
 def sanitize_sheet_name(name):
