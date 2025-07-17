@@ -7,12 +7,12 @@ from datetime import datetime
 import requests
 from bs4 import BeautifulSoup, Doctype
 from urllib.parse import urljoin, urlparse
-from _pack import sp_const
+from _pack import const
 import helpers
 
 # prop list
 def prop_list():
-    for designation, url in sp_const.PROPS.items():
+    for designation, url in const.PROPS.items():
         print(f'{designation}: {url}')
 
 # validate URL
@@ -37,7 +37,7 @@ def get_targets(init_prompt, url):
         match = re.search(regex_pattern, url, re.IGNORECASE)
         if match:
             domain = match.group(2)
-            for key, value in sp_const.PROPS.items():
+            for key, value in const.PROPS.items():
                 if domain in value:
                     init_prompt = key
                     break
@@ -63,13 +63,13 @@ def get_targets(init_prompt, url):
 
 def handle_tag_choice(tag_choice, init_prompt):
     if tag_choice == '1':
-        target_tag = sp_const.NAVTAGS.get(init_prompt, "")
-        target_id = sp_const.NAVIDS.get(init_prompt, "")
-        target_class = sp_const.NAVCLASSES.get(init_prompt, "")
+        target_tag = const.NAVTAGS.get(init_prompt, "")
+        target_id = const.NAVIDS.get(init_prompt, "")
+        target_class = const.NAVCLASSES.get(init_prompt, "")
     elif tag_choice =='2':
-        target_tag = sp_const.CONT_TAGS.get(init_prompt, "")
-        target_id = sp_const.CONT_IDS.get(init_prompt, "")
-        target_class = sp_const.CONT_CLASSES.get(init_prompt, "")
+        target_tag = const.CONT_TAGS.get(init_prompt, "")
+        target_id = const.CONT_IDS.get(init_prompt, "")
+        target_class = const.CONT_CLASSES.get(init_prompt, "")
     # print("Processed targets: ")
     # print(target_tag, target_id, target_class)
     return target_tag, target_id, target_class
@@ -132,7 +132,7 @@ def within_crawl_depth(link_depth, crawl_depth):
 # get user input URL
 def get_crawl_seed():
     prop_list()
-    print("Web Crawler by JDT, specified for SportsWarehouse\n"
+    print("Web Crawler by JDT\n"
           "Current functionality: NAV links only\n"
           "Testing functionality: CONTENT links only\n"
           "Excluding 'descpages', contact links, and jumplinks(#)")
@@ -160,8 +160,8 @@ def get_crawl_seed():
                 print("Invalid URL. Please enter a valid URL.")    
             print("Processing the following URL:", user_url)
             return init_prompt, user_url
-        elif len(init_prompt) <= 3 and init_prompt in sp_const.PROPS:
-            ref_url = sp_const.PROPS[init_prompt]
+        elif len(init_prompt) <= 3 and init_prompt in const.PROPS:
+            ref_url = const.PROPS[init_prompt]
             print(f"The winner is... {ref_url}")
             return init_prompt, ref_url 
         # evaluate elif needed
