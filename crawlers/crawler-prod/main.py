@@ -12,9 +12,9 @@ from bs4 import BeautifulSoup, Doctype
 from requests.exceptions import RequestException
 import helpers
 
-# prop list
+# config file loading
 def load_const_module(const_file=None):
-    """Dynamically loads a const.py file as a module."""
+    """Dynamically loads a constants.py file as a module."""
     if const_file is None:
         const_file = os.path.join(os.path.dirname(__file__), "core", "default_constants.py")
     if not os.path.exists(const_file):
@@ -67,8 +67,6 @@ def get_targets(init_prompt, url, const):
             break
         else:
             print("Invalid input, please select 1 or 2")
-    # call handle_tag_choice to get the target qualifiers
-    # print(f"Tag choice: {tag_choice} | Init prompt: {init_prompt}")
     return handle_tag_choice(tag_choice, init_prompt, const)
 
 def handle_tag_choice(tag_choice, init_prompt, const):
@@ -80,8 +78,6 @@ def handle_tag_choice(tag_choice, init_prompt, const):
         target_tag = const.CONT_TAGS.get(init_prompt, "")
         target_id = const.CONT_IDS.get(init_prompt, "")
         target_class = const.CONT_CLASSES.get(init_prompt, "")
-    # print("Processed targets: ")
-    # print(target_tag, target_id, target_class)
     return target_tag, target_id, target_class
 
 def get_page_details(soup):
@@ -171,10 +167,6 @@ def get_crawl_seed(const):
             ref_url = const.PROPS[init_prompt]
             print(f"The winner is... {ref_url}")
             return init_prompt, ref_url 
-        # evaluate elif needed
-        # elif is_valid_url(init_prompt):
-        #     print(f"The winner is...{init_prompt}")
-        #     return init_prompt, init_prompt 
         else:
             print("Invalid input. Please enter a 2-letter character designation.\n")
 

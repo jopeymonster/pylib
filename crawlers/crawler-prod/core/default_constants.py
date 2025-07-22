@@ -20,19 +20,19 @@ CLASS_HEADER = 'l-header'
 
 # if available, WIP
 CAT_DESC = {
-'EA': 'catheader_info-catdesc',
+'DG': 'catheader_info-catdesc',
 }
 
 # left menu
 NAV = {
-'EA':('mobile_content', 'l-content-menu'),
+'DG':('mobile_content', 'l-content-menu'),
 }
 
 # main view
 CONTENT = {
 # 'CONTENT_TOTAL_ID':'mobile_content',
 # 'MAIN_CONTENT_ID':'main_content',
-'EA':('mobile_content', 'l-content-area'),
+'DG':('mobile_content', 'l-content-area'),
 }
 
 # standard html tags
@@ -55,26 +55,26 @@ STDTAGS = {
 
 # example dicts
 NAVTAGS = {
-'EA':('mobile_content', 'l-content-menu'),
+'DG':('mobile_content', 'l-content-menu'),
 }
 
 NAVIDS = {
-'EA':('mobile_content', 'l-content-menu'),
+'DG':('mobile_content', 'l-content-menu'),
 }
 
 NAVCLASSES = {
-'EA':('mobile_content', 'l-content-menu'),
+'DG':('mobile_content', 'l-content-menu'),
 }
 
 CONT_TAGS = {
-'EA':('mobile_content', 'l-content-area'),
+'DG':('mobile_content', 'l-content-area'),
 }
 
 CONT_IDS = {
-'EA':('mobile_content', 'l-content-area'),
+'DG':('mobile_content', 'l-content-area'),
 }
 
 CONT_CLASSES = {
-'EA':('mobile_content', 'l-content-area'),
+'DG':('mobile_content', 'l-content-area'),
 }
 
