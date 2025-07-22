@@ -6,7 +6,11 @@ format:
 'DESIGNATION': 'FULL URL'    
 """    
 PROPS = {
-'EA':'https://www.exmaple.com/',
+'BS':'https://books.toscrape.com/',
+'QS':'https://quotes.toscrape.com/',
+'EN':'https://www.espn.com/',
+'DG':'https://data.gov/',
+'YF':'https://finance.yahoo.com/',
 'XX':'Input exact URL',
 'EX':'Quit'
 }
@@ -49,7 +53,7 @@ STDTAGS = {
 'STDTAG_TIME':'time'
 }
 
-# SP specific dicts
+# example dicts
 NAVTAGS = {
 'EA':('mobile_content', 'l-content-menu'),
 }

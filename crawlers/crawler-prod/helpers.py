@@ -12,8 +12,6 @@ def handle_exceptions(func):
     def wrapper(*args, **kwargs):
         try:
             return func(*args, **kwargs)
-        except requests.exceptions.RequestException as e:
-            print_error(func.__name__, e)
         except ValueError as e:
             print_error(func.__name__, e)
         except KeyboardInterrupt as e:
@@ -39,7 +37,7 @@ def user_error(err_type):
 
 def custom_input(prompt=''):
     user_input = input(prompt)
-    if user_input.lower() == 'ex':
+    if user_input.lower() == 'exit':
         sys.exit("\nExiting the program at user request...\n")
     return user_input
 
