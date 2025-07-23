@@ -245,14 +245,15 @@ def crawl(headers, init_prompt, url_seed, target_tag, target_id, target_class, c
             crawled_urls.add(target_url)
             # extract links and track source
             for link in target_links_group:
-                link = link.get("href", "No href attribute")
-                if "#" in link or link.startswith("tel:") or re.search(r'descpage', link):
+                href = link.get("href", "")
+                if not href:
                     continue
-                if link and not any(link.startswith(s) for s in ("#", "tel:", "mailto:")):
-                    absolute_link = urljoin(target_url, link)
-                    parsed_link = urlparse(absolute_link)
-                    if parsed_link.netloc == urlparse(url_seed).netloc:
-                        to_crawl.append((absolute_link, current_depth + 1, target_url))
+                if any(href.startswith(s) for s in ("tel:", "mailto:", "#")) or "descpage" in href:
+                    continue
+                absolute_link = urljoin(target_url, href)
+                parsed_link = urlparse(absolute_link)
+                if parsed_link.netloc == urlparse(url_seed).netloc:
+                    to_crawl.append((absolute_link, current_depth + 1, target_url))
     print(f"\nIdentified {counted_urls} links, {total_errors} errors were found | Saved output to {file_name}")
     end_time = time.time()
     execution_time = end_time - start_time
