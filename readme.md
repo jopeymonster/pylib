@@ -9,13 +9,10 @@
 A collection of Python projects with various uses and scopes.
 
 ## License
-This project is licensed under the MIT License.
+This project is licensed under the [MIT License](LICENSE).
+
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
 ## Contact
-- Joe Thompson
-- jopeymonster83@gmail.com
-- [GitHub](https://github.com/jopeymonster)
-- joe.thompson@warehousesports.com
-- [GitHub](https://github.com/JoeWarehouseSports)
-- thompsondevops@gmail.com
-- [GitHub](https://github.com/ThompsonDevOps)
+- Joe Thompson (@jopeymonster)
+- https://github.com/jopeymonster
