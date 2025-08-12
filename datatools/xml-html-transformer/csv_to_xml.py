@@ -38,7 +38,8 @@ def convert_csv_to_xml(csv_file, xml_file_name=None):
                     continue  # Skip adding URL if invalid
                 xmlfile.write(generate_xml_row(loc, changefreq, priority))
             xmlfile.write('</urlset>\n')  # Closing XML URL set
-    print("Conversion completed successfully.")
+    print("Conversion completed successfully.\n"
+          f"Data saved to {os.path.abspath(xml_file_name)}.xml")
 
 def main():
     print("XML File Converter by JDT\n"
@@ -50,7 +51,6 @@ def main():
         csv_file_path = input("Enter the path to the CSV file: ")
     xml_file_name = input("Enter the name for the output XML file (Press Enter for default): ").strip()
     convert_csv_to_xml(csv_file_path, xml_file_name)
-    print(f"Data saved to {os.path.abspath(xml_file_name)}.xml")
 
 if __name__ == "__main__":
     main()
