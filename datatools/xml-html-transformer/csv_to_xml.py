@@ -15,11 +15,11 @@ def generate_xml_row(loc, changefreq=None, priority=None):
     xml_row += "</url>\n"
     return xml_row
 
-def convert_csv_to_xml(csv_file, xml_file_name=None):
-    if not xml_file_name:
+def convert_csv_to_xml(csv_file, filename_input=None):
+    if not filename_input:
         xml_file_name = f"xml_file_output_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.xml"
     else:
-        xml_file_name = f"{xml_file_name}_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.xml"
+        xml_file_name = f"{filename_input}_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.xml"
     with open(csv_file, 'r', newline='', encoding='utf-8-sig') as csvfile:  # Use 'utf-8-sig' encoding to handle BOM
         reader = csv.DictReader(csvfile)
         next(reader)  # Skip header row
@@ -39,7 +39,7 @@ def convert_csv_to_xml(csv_file, xml_file_name=None):
                 xmlfile.write(generate_xml_row(loc, changefreq, priority))
             xmlfile.write('</urlset>\n')  # Closing XML URL set
     print("Conversion completed successfully.\n"
-          f"Data saved to {os.path.abspath(xml_file_name)}.xml")
+          f"Data saved to {os.path.abspath(xml_file_name)}")
 
 def main():
     print("XML File Converter by JDT\n"
@@ -49,8 +49,8 @@ def main():
     while not validate_file_path(csv_file_path):
         print("Invalid file path. Please enter a valid path.")
         csv_file_path = input("Enter the path to the CSV file: ")
-    xml_file_name = input("Enter the name for the output XML file (Press Enter for default): ").strip()
-    convert_csv_to_xml(csv_file_path, xml_file_name)
+    filename_input = input("Enter the name for the output XML file (Press Enter for default): ").strip()
+    convert_csv_to_xml(csv_file_path, filename_input)
 
 if __name__ == "__main__":
     main()
