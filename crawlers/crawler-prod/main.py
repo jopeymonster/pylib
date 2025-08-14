@@ -282,7 +282,7 @@ def main():
         prog="Simple Web Link Crawler",
         description="Crawl a website for links based on parameters defined in the const.py file.",
         epilog="Developed by JDT",
-        formatter_class=argparse.RawTextHelpFormatter
+        formatter_class=argparse.RawTextHelpFormatter,
     )
     parser.add_argument(
         "-c", "--const",
